@@ -12,7 +12,7 @@ exports.getCid = async (req, res, next) => {
     const token = authHeader.split(" ")[1];
 
     // ✅ Verify the token
-    const decoded = jwt.verify(token, process.env.SECRET_KEY);
+    const decoded = jwt.verify(token, "hjuyu8hj#23");
 
     // Find user in DB
     const user = await Firm.findByPk(decoded.id); // or findOne({ where: { id: decoded.id } })
@@ -31,3 +31,4 @@ exports.getCid = async (req, res, next) => {
     res.status(401).json({ message: "Invalid or expired token" });
   }
 };
+
