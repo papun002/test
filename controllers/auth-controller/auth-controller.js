@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
     }
 
     // Optionally, create a JWT token
-    const token = jwt.sign({ id: firm.id, mobileNo: firm.mobileNo }, process.env.SECRET_KEY, { expiresIn: "24hr" });
+    const token = jwt.sign({ id: firm.id, mobileNo: firm.mobileNo }, "hjuyu8hj#23", { expiresIn: "24hr" });
 
     // Exclude password from response
     const { password: _, ...firmData } = firm.toJSON();
@@ -52,3 +52,4 @@ exports.login = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
