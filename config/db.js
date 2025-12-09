@@ -8,12 +8,12 @@ const caCert = fs.readFileSync(__dirname + "/ca.pem");
 
 // Create Sequelize instance
 const sequelize = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
+  "busdb",
+  "avnadmin",
+  "AVNS_FdIV_dEMHqP-_Rn7vif",
   {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT, // make sure this is 17404 from your screenshot
+    host: "mysql-118e19e7-ranarahul87076-812e.c.aivencloud.com",
+    port: "17400", // make sure this is 17404 from your screenshot
     dialect: process.env.DB_DIALECT || "mysql",
     logging: false,
     pool: {
@@ -41,6 +41,7 @@ async function connectDB() {
 }
 
 module.exports = { sequelize, connectDB };
+
 
 
 
