@@ -1,0 +1,19 @@
+const express = require("express");
+const router = express.Router();
+const { getCid } = require("../../middleware/getCid-middlware/getCid");
+
+const routeController = require("../../controllers/route-controller/route.controller");
+
+// Create a new route
+router.post("/create/route", getCid, routeController.createRoute);
+
+// Get all routes
+router.get("/get/routes", getCid, routeController.getRoutes);
+
+// Delete a route
+router.delete("/delete/route", getCid, routeController.deleteRoute);
+
+
+
+
+module.exports = router;
