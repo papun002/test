@@ -53,3 +53,84 @@ exports.login = async (req, res) => {
   }
 };
 
+// conductor login
+exports.conductorLogin = async (req, res) => {
+  try {
+    const { mobile, password } = req.body;
+
+    if (!mobile) {
+      return res.status(400).json({ message: "Mobile number is required" });
+    }
+
+    // Find active, non-deleted staff
+    const staff = await staffModel.findOne({
+      where: {
+        phone: mobile,
+        status: true,
+        isDeleted: false,
+      },
+    });
+
+    if (!staff) {
+      return res.status(404).json({ message: "Staff not found or inactive" });
+    }
+
+    // Conductor login (password optional)
+    if (staff.role === "conductor") {
+      // Optional: check password only if provided
+      if (password && staff.password && password !== staff.password) {
+        return res
+          .status(400)
+          .json({ message: "Invalid mobile number or password" });
+      }
+
+      // Create JWT token
+      const token = jwt.sign(
+        { id: staff.id, mobile: staff.phone, role: staff.role },
+        process.env.SECRET_KEY,
+        { expiresIn: "24h" }
+      );
+
+      // Exclude password from response
+      const { password: _, ...staffData } = staff.toJSON();
+
+      return res.status(200).json({
+        message: "Login successful",
+        staff: staffData,
+        token,
+      });
+    }
+
+    // Other roles (optional password check)
+    if (!password || staff.password !== password) {
+      return res
+        .status(400)
+        .json({ message: "Invalid mobile number or password" });
+    }
+
+    // Create JWT token for non-conductor staff
+    const token = jwt.sign(
+      { id: staff.id, mobile: staff.phone, role: staff.role },
+      process.env.SECRET_KEY,
+      { expiresIn: "24h" }
+    );
+
+    const { password: _, ...staffData } = staff.toJSON();
+
+    return res.status(200).json({
+      message: "Login successful",
+      staff: {
+        name: staffData.name,
+        nickName: staffData.nickName,
+        mobile: staffData.phone,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error("Error in login:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+
