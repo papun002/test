@@ -56,7 +56,7 @@ exports.login = async (req, res) => {
     // Optionally, create a JWT token
     const token = jwt.sign(
       { id: firm.id, mobileNo: firm.mobileNo },
-      "heigh*7bhb",
+      "hjuyu8hj#23",
       { expiresIn: "24hr" }
     );
 
@@ -105,7 +105,7 @@ exports.conductorLogin = async (req, res) => {
       // Create JWT token
       const token = jwt.sign(
         { id: staff.id, mobile: staff.phone, role: staff.role },
-        "heigh*7bhb",
+        "hjuyu8hj#23",
         { expiresIn: "24h" }
       );
 
@@ -129,7 +129,7 @@ exports.conductorLogin = async (req, res) => {
     // Create JWT token for non-conductor staff
     const token = jwt.sign(
       { id: staff.id, mobile: staff.phone, role: staff.role },
-      "heigh*7bhb",
+      "hjuyu8hj#23",
       { expiresIn: "24h" }
     );
 
@@ -149,4 +149,5 @@ exports.conductorLogin = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
