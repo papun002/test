@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Firm = require('../models/Firm');
 
-const JWT_SECRET = process.env.SECRET_KEY; // keep same as in utils/jwt.js
+const JWT_SECRET = "hjuyu8hj#23"; // keep same as in utils/jwt.js
 
 exports.protect = async (req, res, next) => {
   let token;
@@ -31,3 +31,4 @@ exports.protect = async (req, res, next) => {
     return res.status(401).json({ message: 'Not authorized, invalid token' });
   }
 };
+
