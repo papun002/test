@@ -33,7 +33,7 @@ exports.getRoutes = async (req, res) => {
         [
           FleetTripModel.sequelize.literal(`(
             SELECT MAX(trips.date) 
-            FROM tripFleetDetails AS trips
+            FROM tripfleetdetails AS trips
             WHERE trips.routeId = RouteModel.id
               AND trips.cid = ${req.cid}
               AND trips.isDeleted = false
@@ -78,4 +78,5 @@ exports.deleteRoute = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
