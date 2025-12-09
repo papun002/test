@@ -3,7 +3,7 @@ const fs = require("fs");
 require("dotenv").config();
 
 // Read Aiven CA certificate
-const caCert = fs.readFileSync("./ca.pem"); // path to downloaded certificate
+const caCert = fs.readFileSync("/ca.pem"); // path to downloaded certificate
 
 // Create Sequelize instance
 const sequelize = new Sequelize(
@@ -40,4 +40,5 @@ async function connectDB() {
 }
 
 module.exports = { sequelize, connectDB };
+
 
