@@ -9,10 +9,9 @@ router.get("/get/staff", getCid, staffController.getStaff);
 router.delete("/delete/staff", getCid, staffController.deleteStaff);
 router.put("/update/staff", getCid, staffController.updateStaff);
 router.put("/active/staff", getCid, staffController.activeStaff);
+router.get("/getstaffbymobile", getCid, staffController.getStaffByMobile);
 
 
-
-
-
+router.get("/get/driver/allsummary", getCid,staffController.getStaffAllSummary)
 
 module.exports = router;
