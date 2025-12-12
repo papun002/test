@@ -507,7 +507,7 @@ exports.getTripsByConductorId = async (req, res) => {
           attributes: ["id", "nickName"],
         },
       ],
-      limit:5;
+      LIMIT:5
     });
     res.status(200).json({ trips });
   } catch (error) {
@@ -584,5 +584,6 @@ exports.createTripByConductorId = async (req, res) => {
     });
   }
 };
+
 
 
