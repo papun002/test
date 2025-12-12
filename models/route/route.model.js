@@ -1,6 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/db");
-const Firm = require("../auth/signup");
+const Firm = require("../../models/auth/signup");
 
 const RouteModel = sequelize.define(
   "RouteModel",
@@ -11,30 +11,62 @@ const RouteModel = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
+
     routeName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
+
     defaultVehicle: {
       type: DataTypes.STRING,
       allowNull: true,
     },
+
     cid: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      references: {
-        model: Firm, // name of Target model
-        key: "id", // key in Target model that we're referencing
-      },
+      references: { model: Firm, key: "id" },
       onUpdate: "CASCADE",
       onDelete: "CASCADE",
     },
+
     isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       allowNull: false,
     },
+
+    fixedFasttag: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
+    },
+
+    fixedFuel: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
+    },
+
     status: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+
+    coolieFeild: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+
+    standFeild: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+
+    staffFeild: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+
+    fastTagFeild: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
