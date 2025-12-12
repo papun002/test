@@ -486,3 +486,31 @@ exports.getTripsStaff = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+
+exports.getTripsByConductorId = async (req, res) => {
+  try {
+    const sid = req.sid;
+    const trips = await FleetTripModel.findAll({
+      where: { conductorId: sid, isDeleted: false },
+      order: [["date", "DESC"]],
+      include: [
+        {
+          model: Driver,
+          as: "driver",
+          attributes: ["id", "nickName"],
+        },
+        {
+          model: Conductor,
+          as: "conductor",
+          attributes: ["id", "nickName"],
+        },
+      ],
+    });
+    res.status(200).json({ trips });
+  } catch (error) {
+    console.error("Error fetching trips by conductor ID:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
