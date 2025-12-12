@@ -13,6 +13,7 @@ const {
   CancelTrips,
   getTripsStaff,
   getTripsByConductorId,
+  createTripByConductorId,
 } = require("../../controllers/trip-controller/fleet-trip-details/fleet-trip-details.controller");
 
 const {
@@ -34,9 +35,14 @@ router.get(
   RecentDateOfTripsByRouteId
 );
 router.get("/get/stafffortrips",getCid,getTripsStaff)
-router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
 
 router.delete("/delete/trip", getCid, deleteTrips);
 
+
+// --------------------------------------CONDUCTOR MODULE---------------------------------------------------------------------
+router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
+router.get("/create/tripbyconductorid", getSidOfStaff,createTripByConductorId)
+
 module.exports = router;
+
 
