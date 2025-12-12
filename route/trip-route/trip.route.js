@@ -11,8 +11,13 @@ const {
   RecentDateOfTripsByRouteId,
   deleteTrips,
   CancelTrips,
-  getTripsStaff
+  getTripsStaff,
+  getTripsByConductorId,
 } = require("../../controllers/trip-controller/fleet-trip-details/fleet-trip-details.controller");
+
+const {
+  getSidOfStaff,
+} = require("../../middleware/getCid-middlware/getSidofStaff");
 
 // Create a new trip details
 router.post("/create/trip-details", getCid, CreateTripDetails);
@@ -29,7 +34,9 @@ router.get(
   RecentDateOfTripsByRouteId
 );
 router.get("/get/stafffortrips",getCid,getTripsStaff)
+router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
 
 router.delete("/delete/trip", getCid, deleteTrips);
 
 module.exports = router;
+
