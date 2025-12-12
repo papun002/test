@@ -24,6 +24,7 @@ exports.getSidOfStaff = async (req, res, next) => {
     // ✅ Attach sid and user info to request
     // req.user = user;
     req.sid = user.id;
+    req.cid = user.cid;
 
     next();
   } catch (error) {
