@@ -7,9 +7,6 @@ const {
   getSidOfStaff,
 } = require("../../middleware/getCid-middlware/getSidofStaff");
 
-
-const routeController = require("../../controllers/route-controller/route.controller");
-
 // Create a new route
 router.post("/create/route", getCid, routeController.createRoute);
 
@@ -25,3 +22,4 @@ router.delete("/delete/route", getCid, routeController.deleteRoute);
 router.get("/get/staff/routes", getSidOfStaff, routeController.getRoutes);
 
 module.exports = router;
+
