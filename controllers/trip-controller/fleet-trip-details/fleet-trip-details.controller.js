@@ -514,3 +514,73 @@ exports.getTripsByConductorId = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+exports.createTripByConductorId = async (req, res) => {
+  try {
+    const data = req.body;
+    const sid = req.sid;
+
+    // check same date and bus no is exists
+    const existingTrip = await FleetTripModel.findOne({
+      where: {
+        date: data.date,
+        routeName: data.routeName,
+        routeId: data.routeId,
+        cid: req.cid,
+        isDeleted: 0,
+        conductorId: sid,
+      },
+    });
+
+    if (existingTrip) {
+      return res.status(400).json({
+        success: false,
+        message:
+          "Trip with the same date and Route Name already exists or Cancel",
+      });
+    }
+
+    const tripDetails = await FleetTripModel.create({
+      routeName: data.routeName,
+      date: data.date,
+      routeId: data.routeId,
+      busNo: data.busNo,
+      upTripSale: data.upTripSale,
+      downTripSale: data.downTripSale,
+      luggage: data.luggage,
+      amountJama: data.amountJama,
+      totalSale: data.totalSale,
+      mainFuel: data.mainFuel,
+      fixedFuel: data.fixedFuel,
+      coolie: data.coolie,
+      staff: data.staff,
+      fastTagTollAmt: data.fastTagTollAmt,
+      partsAccessories: data.partsAccessories,
+      mistriWorks: data.mistriWorks,
+      busWorks: data.busWorks,
+      otherExp: data.otherExp,
+      totalExpenditures: data.totalExpenditures,
+      balance: data.balance,
+      driverId: data.driverId,
+      conductorId: sid,
+      mainFuelSameAsFixedFuel: data.mainFuelSameAsFixed,
+      luggageAddWithTotalSale: data.luggageAddWithTotalSale,
+      cid: req.cid,
+      stand: data.stand,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Trip created successfully",
+      tripDetails,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create trip",
+      error: error.message,
+    });
+  }
+};
+
