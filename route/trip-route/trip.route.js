@@ -41,9 +41,10 @@ router.delete("/delete/trip", getCid, deleteTrips);
 
 // --------------------------------------CONDUCTOR MODULE---------------------------------------------------------------------
 router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
-router.get("/create/tripbyconductorid", getSidOfStaff,createTripByConductorId);
+router.post("/create/tripbyconductorid", getSidOfStaff,createTripByConductorId);
 
 module.exports = router;
+
 
 
 
