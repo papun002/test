@@ -119,6 +119,8 @@ exports.staffLogin = async (req, res) => {
       });
     }
 
+    
+
     // Other roles (optional password check)
     if (!password || staff.password !== password) {
       return res
@@ -141,6 +143,7 @@ exports.staffLogin = async (req, res) => {
         name: staffData.name,
         nickName: staffData.nickName,
         mobile: staffData.phone,
+        role: staffData.role,
       },
       token,
     });
