@@ -72,7 +72,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.conductorLogin = async (req, res) => {
+exports.staffLogin = async (req, res) => {
   try {
     const { mobile, password } = req.body;
 
