@@ -2,7 +2,7 @@ const FleetTripModel = require("../../../models/trip/fleet-trip-details/Fleet-tr
 const { route } = require("../../../route/trip-route/trip.route");
 const Driver = require("../../../models/staff/staff.model");
 const Conductor = require("../../../models/staff/staff.model");
-const { Op, fn, col } = require("sequelize");
+const { Op, fn, col, where } = require("sequelize");
 const moment = require("moment");
 const staffModel = require("../../../models/staff/staff.model");
 const routeModel = require("../../../models/route/route.model");
@@ -94,11 +94,11 @@ exports.CancelTrips = async (req, res) => {
     console.log(trip);
 
     if (!trip) {
-       tripDetails = await FleetTripModel.create({
+      tripDetails = await FleetTripModel.create({
         date: date,
         routeName: routeName.routeName,
         busNo: "",
-        cid: req.cid, 
+        cid: req.cid,
         routeId: routeId,
         cid: req.cid,
         isCancel: true,
@@ -427,7 +427,14 @@ exports.deleteTrips = async (req, res) => {
     const { tripId } = req.query;
 
     // Check if trip exists
-    const trip = await FleetTripModel.findByPk(tripId);
+    const trip = await FleetTripModel.findOne({
+      where: {
+        id: tripId,
+        isDeleted: false,
+        cid: req.cid,
+      },
+    });
+
     if (!trip) {
       return res.status(404).json({
         success: false,
@@ -487,8 +494,6 @@ exports.getTripsStaff = async (req, res) => {
   }
 };
 
-
-
 exports.getTripsByConductorId = async (req, res) => {
   try {
     const sid = req.sid;
@@ -507,7 +512,7 @@ exports.getTripsByConductorId = async (req, res) => {
           attributes: ["id", "nickName"],
         },
       ],
-      limit:5
+      limit: 5,
     });
     res.status(200).json({ trips });
   } catch (error) {
@@ -585,6 +590,49 @@ exports.createTripByConductorId = async (req, res) => {
   }
 };
 
+exports.deleteTripsStaff = async (req, res) => {
+  try {
+    const { tripId } = req.query;
+    const sid = req.sid;
 
+    if (!tripId) {
+      return res.status(400).json({
+        success: false,
+        message: "Trip ID is required",
+      });
+    }
 
+    // ✅ Correct query (PK + ownership + not deleted)
+    const trip = await FleetTripModel.findOne({
+      where: {
+        id: tripId,
+        conductorId: sid,
+        isDeleted: false,
+        cid: req.cid,
+      },
+    });
 
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found or access denied",
+      });
+    }
+
+    // ✅ Soft delete
+    await trip.update({ isDeleted: true });
+
+    console.log(`Trip ${tripId} deleted by staff ${sid}`);
+
+    return res.status(200).json({
+      success: true,
+      message: "Trip deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error deleting trip:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete trip",
+    });
+  }
+};

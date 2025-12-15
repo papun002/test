@@ -14,6 +14,7 @@ const {
   getTripsStaff,
   getTripsByConductorId,
   createTripByConductorId,
+  deleteTripsStaff,
 } = require("../../controllers/trip-controller/fleet-trip-details/fleet-trip-details.controller");
 
 const {
@@ -42,6 +43,7 @@ router.delete("/delete/trip", getCid, deleteTrips);
 // --------------------------------------CONDUCTOR MODULE---------------------------------------------------------------------
 router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
 router.post("/create/tripbyconductorid", getSidOfStaff,createTripByConductorId);
+router.delete("/delete/staff/trip", getSidOfStaff, deleteTripsStaff);
 
 module.exports = router;
 
