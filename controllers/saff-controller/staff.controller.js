@@ -39,26 +39,28 @@ exports.createStaff = async (req, res) => {
 exports.getStaff = async (req, res) => {
   try {
     const { role } = req.query;
-    let staff;
-    if (role === "driver") {
-      staff = await staffModel.findAll({
-        where: { cid: req.cid, isDeleted: false, role: role },
-      });
-    } else if (role === "conductor") {
-      staff = await staffModel.findAll({
-        where: { cid: req.cid, isDeleted: false, role: role },
-      });
-    } else {
-      staff = await staffModel.findAll({
-        where: { cid: req.cid, isDeleted: false, role: role },
-      });
+
+    const whereCondition = {
+      cid: req.cid,
+      isDeleted: false,
+    };
+
+    // Apply role filter only if provided
+    if (role) {
+      whereCondition.role = role;
     }
+
+    const staff = await staffModel.findAll({
+      where: whereCondition,
+    });
+
     res.status(200).json({ staff });
   } catch (error) {
     console.error("Error fetching staff:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // delete staff
 exports.deleteStaff = async (req, res) => {
@@ -315,5 +317,3 @@ exports.getStaffByMobile = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
