@@ -636,3 +636,105 @@ exports.deleteTripsStaff = async (req, res) => {
     });
   }
 };
+
+exports.FetchTripDetailsByManager = async (req, res) => {
+  try {
+    const { routeId } = req.query;
+
+    const tripDetails = await FleetTripModel.findAll({
+      where: {
+        cid: req.cid,
+        isDeleted: false,
+        routeId: routeId,
+      },
+      include: [
+        {
+          model: Driver,
+          as: "driver",
+          attributes: ["id", "nickName"],
+        },
+        {
+          model: Conductor,
+          as: "conductor",
+          attributes: ["id", "nickName"],
+        },
+      ],
+      order: [["date", "DESC"]],
+      limit: 15
+    });
+
+    res.status(200).json({
+      success: true,
+      tripDetails,
+    });
+  } catch (error) {
+    console.error("Error fetching trip details:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch trip details",
+      error: error.message,
+    });
+  }
+};
+
+const { Op } = require("sequelize");
+
+exports.FetchTripDetailsByManagerCustomDate = async (req, res) => {
+  try {
+    const { routeId, startDate, endDate } = req.query;
+
+    // Build where condition
+    const whereCondition = {
+      cid: req.cid,
+      isDeleted: false,
+    };
+
+    if (routeId) {
+      whereCondition.routeId = routeId;
+    }
+
+    if (startDate && endDate) {
+      whereCondition.date = {
+        [Op.between]: [new Date(startDate), new Date(endDate)],
+      };
+    } else if (startDate) {
+      whereCondition.date = {
+        [Op.gte]: new Date(startDate),
+      };
+    } else if (endDate) {
+      whereCondition.date = {
+        [Op.lte]: new Date(endDate),
+      };
+    }
+
+    const tripDetails = await FleetTripModel.findAll({
+      where: whereCondition,
+      include: [
+        {
+          model: Driver,
+          as: "driver",
+          attributes: ["id", "nickName"],
+        },
+        {
+          model: Conductor,
+          as: "conductor",
+          attributes: ["id", "nickName"],
+        },
+      ],
+      order: [["date", "DESC"]],
+    });
+
+    res.status(200).json({
+      success: true,
+      totalRecords: tripDetails.length,
+      tripDetails,
+    });
+  } catch (error) {
+    console.error("Error fetching trip details:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch trip details",
+      error: error.message,
+    });
+  }
+};
