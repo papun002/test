@@ -17,6 +17,7 @@ const dashboardRoutes = require("./route/dashboard/dashboard.route");
 const recycleRoutes = require("./route/recycle/recycle.route");
 const backupRoutes = require("./route/backup-route/backupRoutes");
 const notifyRoutes = require("./route/notify/notify.route");
+const busworkRoutes = require("./route/buswork/buswork.route");
 
 const numCPUs = os.cpus().length;
 const PORT = process.env.PORT || 4000;
@@ -57,6 +58,7 @@ async function startServer() {
   app.use("/api/recycle", recycleRoutes);
   app.use("/api/backup", backupRoutes);
   app.use("/api/notify", notifyRoutes);
+  app.use("/api/buswork", busworkRoutes);
 
   // Basic route
   app.get("/", (req, res) => {
