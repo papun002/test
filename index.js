@@ -7,6 +7,8 @@ const compression = require("compression");
 const cluster = require("cluster");
 const os = require("os");
 const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
 const authRoutes = require("./route/auth.route");
 const tripRoutes = require("./route/trip-route/trip.route");
 const vehicleRoutes = require("./route/vehicle-route/vehicle.route");
@@ -18,6 +20,7 @@ const recycleRoutes = require("./route/recycle/recycle.route");
 const backupRoutes = require("./route/backup-route/backupRoutes");
 const notifyRoutes = require("./route/notify/notify.route");
 const busworkRoutes = require("./route/buswork/buswork.route");
+const taskAssignRoutes = require("./route/taskAssign/taskAssign.route");
 
 const numCPUs = os.cpus().length;
 const PORT = process.env.PORT || 4000;
@@ -59,6 +62,7 @@ async function startServer() {
   app.use("/api/backup", backupRoutes);
   app.use("/api/notify", notifyRoutes);
   app.use("/api/buswork", busworkRoutes);
+  app.use("/api/taskassign", taskAssignRoutes);
 
   // Basic route
   app.get("/", (req, res) => {

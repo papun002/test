@@ -677,8 +677,6 @@ exports.FetchTripDetailsByManager = async (req, res) => {
   }
 };
 
-const { Op } = require("sequelize");
-
 exports.FetchTripDetailsByManagerCustomDate = async (req, res) => {
   try {
     const { routeId, startDate, endDate } = req.query;
