@@ -24,6 +24,7 @@ exports.getCid = async (req, res, next) => {
     // ✅ Attach cid and user info to request
     // req.user = user;
     req.cid = user.id;
+    req.role = "owner"; // assuming user has a role field
 
     next();
   } catch (error) {
