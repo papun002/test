@@ -531,14 +531,16 @@ const getConductorId = (req, body) => {
 
 exports.createTripByStaffId = async (req, res) => {
   try {
-      const data = req.body;
+    const data = req.body;
     const cid = req.cid;
     const role = req.role;
 
-     // 🔹 Determine conductorId
+    console.log("Request Role:", role);
+
+    // 🔹 Determine conductorId
     const conductorId = getConductorId(req, data);
 
-     if (!conductorId) {
+    if (!conductorId) {
       return res.status(400).json({
         success: false,
         message:
@@ -682,7 +684,7 @@ exports.FetchTripDetailsByManager = async (req, res) => {
         },
       ],
       order: [["date", "DESC"]],
-      limit: 15
+      limit: 15,
     });
 
     res.status(200).json({
