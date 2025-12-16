@@ -25,6 +25,7 @@ exports.getSidOfStaff = async (req, res, next) => {
     // req.user = user;
     req.sid = user.id;
     req.cid = user.cid;
+    req.role = decoded.role;
 
     next();
   } catch (error) {

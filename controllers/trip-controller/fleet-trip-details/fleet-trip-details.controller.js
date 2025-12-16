@@ -521,10 +521,32 @@ exports.getTripsByConductorId = async (req, res) => {
   }
 };
 
-exports.createTripByConductorId = async (req, res) => {
+// Helper: get conductorId based on role
+const getConductorId = (req, body) => {
+  // Staff (conductor) can only create for themselves
+  if (req.role === "conductor") return req.sid;
+  // Manager must provide conductorId
+  return body.conductorId;
+};
+
+exports.createTripByStaffId = async (req, res) => {
   try {
-    const data = req.body;
-    const sid = req.sid;
+      const data = req.body;
+    const cid = req.cid;
+    const role = req.role;
+
+     // 🔹 Determine conductorId
+    const conductorId = getConductorId(req, data);
+
+     if (!conductorId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          role === "manager"
+            ? "Conductor ID is required for manager"
+            : "Conductor ID is required",
+      });
+    }
 
     // check same date and bus no is exists
     const existingTrip = await FleetTripModel.findOne({
@@ -532,9 +554,9 @@ exports.createTripByConductorId = async (req, res) => {
         date: data.date,
         routeName: data.routeName,
         routeId: data.routeId,
-        cid: req.cid,
-        isDeleted: 0,
-        conductorId: sid,
+        cid: cid,
+        isDeleted: false,
+        conductorId: conductorId,
       },
     });
 
@@ -568,10 +590,10 @@ exports.createTripByConductorId = async (req, res) => {
       totalExpenditures: data.totalExpenditures,
       balance: data.balance,
       driverId: data.driverId,
-      conductorId: sid,
+      conductorId: conductorId,
       mainFuelSameAsFixedFuel: data.mainFuelSameAsFixed,
       luggageAddWithTotalSale: data.luggageAddWithTotalSale,
-      cid: req.cid,
+      cid: cid,
       stand: data.stand,
     });
 

@@ -13,7 +13,7 @@ const {
   CancelTrips,
   getTripsStaff,
   getTripsByConductorId,
-  createTripByConductorId,
+  createTripByStaffId,
   deleteTripsStaff,
   FetchTripDetailsByManager,
   FetchTripDetailsByManagerCustomDate,
@@ -44,7 +44,7 @@ router.delete("/delete/trip", getCid, deleteTrips);
 
 // --------------------------------------CONDUCTOR MODULE---------------------------------------------------------------------
 router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
-router.post("/create/tripbyconductorid", getSidOfStaff,createTripByConductorId);
+router.post("/create/tripbyconductorid", getSidOfStaff,createTripByStaffId);
 router.delete("/delete/staff/trip", getSidOfStaff, deleteTripsStaff);
 
 
