@@ -17,6 +17,7 @@ const {
   deleteTripsStaff,
   FetchTripDetailsByManager,
   FetchTripDetailsByManagerCustomDate,
+  updateTripByStaffId,
 } = require("../../controllers/trip-controller/fleet-trip-details/fleet-trip-details.controller");
 
 const {
@@ -46,6 +47,8 @@ router.delete("/delete/trip", getCid, deleteTrips);
 router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
 router.post("/create/tripbyconductorid", getSidOfStaff,createTripByStaffId);
 router.delete("/delete/staff/trip", getSidOfStaff, deleteTripsStaff);
+router.put("/update/staff/trip", getSidOfStaff, updateTripByStaffId);
+
 
 
 
