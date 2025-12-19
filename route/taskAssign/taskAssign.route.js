@@ -4,6 +4,7 @@ const {
   getAllPendingTasksForAdmin,
   approveRejectTaskAssign,
   getTasksByStaffId,
+  deleteTaskAssign,
 } = require("../../controllers/taskAssign-controller/taskassign.controller");
 const {
   getSidOfStaff,
@@ -13,6 +14,8 @@ const router = express.Router();
 
 router.post("/create/taskassign", getSidOfStaff, createTaskAssign);
 router.get("/get/taskassignbystaffid", getSidOfStaff, getTasksByStaffId);
+router.delete("/delete/taskassignbystaffid", getSidOfStaff, deleteTaskAssign);
+
 
 // manager admin routes
 router.get(
@@ -25,6 +28,7 @@ router.put(
   getSidOfStaff,
   approveRejectTaskAssign
 );
+
 
 // owner admin routes
 router.get("/get/taskassign", getCid, getAllPendingTasksForAdmin);

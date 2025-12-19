@@ -198,3 +198,40 @@ exports.getTasksByStaffId = async (req, res) => {
     });
   }
 };
+
+// delete task assignment (hard delete)
+
+exports.deleteTaskAssign = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const cid = req.cid;
+
+    const task = await taskAssignModel.findOne({
+      where: {
+        id: taskId,
+        cid,
+      },
+    });
+
+    if (!task) {
+      return res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+    }
+
+    await task.destroy(); // 🔥 PERMANENT DELETE
+
+    return res.status(200).json({
+      success: true,
+      message: "Task permanently deleted",
+    });
+  } catch (error) {
+    console.error("Delete Task Assign Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
