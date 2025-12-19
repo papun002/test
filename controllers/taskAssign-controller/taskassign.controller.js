@@ -203,7 +203,7 @@ exports.getTasksByStaffId = async (req, res) => {
 
 exports.deleteTaskAssign = async (req, res) => {
   try {
-    const { taskId } = req.params;
+    const { taskId } = req.query;
     const cid = req.cid;
 
     const task = await taskAssignModel.findOne({
