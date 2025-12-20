@@ -1,7 +1,7 @@
 const express = require("express");
 const {
   createTaskAssign,
-  getAllPendingTasksForAdmin,
+  getAllTasksForAdmin,
   approveRejectTaskAssign,
   getTasksByStaffId,
   deleteTaskAssign,
@@ -21,7 +21,7 @@ router.delete("/delete/taskassignbystaffid", getSidOfStaff, deleteTaskAssign);
 router.get(
   "/get/manager/taskassign",
   getSidOfStaff,
-  getAllPendingTasksForAdmin
+  getAllTasksForAdmin
 );
 router.put(
   "/update/manager/taskassign/status",
@@ -31,7 +31,7 @@ router.put(
 
 
 // owner admin routes
-router.get("/get/taskassign", getCid, getAllPendingTasksForAdmin);
+router.get("/get/taskassign", getCid, getAllTasksForAdmin);
 router.put("/update/taskassign/status", getCid, approveRejectTaskAssign);
 
 module.exports = router;

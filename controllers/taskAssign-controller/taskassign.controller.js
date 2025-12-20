@@ -66,14 +66,15 @@ exports.createTaskAssign = async (req, res) => {
 };
 
 // get all pending tasks for admin
-exports.getAllPendingTasksForAdmin = async (req, res) => {
+exports.getAllTasksForAdmin = async (req, res) => {
   try {
     const cid = req.cid; // admin company id
+    const sts = req.query.status;
 
     const tasks = await taskAssignModel.findAll({
       where: {
         cid,
-        status: "pending",
+        status: sts,
         isDeleted: false,
       },
       order: [["date", "desc"]],
