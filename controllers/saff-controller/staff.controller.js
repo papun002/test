@@ -6,7 +6,7 @@ exports.createStaff = async (req, res) => {
 
     // Check if staff with same mobile already exists
     const existingStaff = await staffModel.findOne({
-      where: { phone: phone, cid: req.cid },
+      where: { phone: phone, cid: req.cid, isDeleted: false },
     });
 
     if (existingStaff) {
@@ -139,9 +139,8 @@ exports.activeStaff = async (req, res) => {
     });
 
     res.status(200).json({
-      message: `${updatedStaff.nickName} ${
-        status === true ? "Activated" : "Deactivated"
-      } successfully`,
+      message: `${updatedStaff.nickName} ${status === true ? "Activated" : "Deactivated"
+        } successfully`,
       staff: updatedStaff,
     });
   } catch (error) {
