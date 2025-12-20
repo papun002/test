@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Firm = require("../../models/auth/signup");
+const staffModel = require("../../models/staff/staff.model");
 // Middleware to extract cid from JWT token and attach to request
 exports.getCid = async (req, res, next) => {
   try {
@@ -15,7 +16,15 @@ exports.getCid = async (req, res, next) => {
     const decoded = jwt.verify(token, "hjuyu8hj#23");
 
     // Find user in DB
-    const user = await Firm.findByPk(decoded.id); // or findOne({ where: { id: decoded.id } })
+    let user = null;
+
+    // Find user in DB
+    if (decoded.role === "owner") {
+      user = await Firm.findByPk(decoded.id);
+    } else if (decoded.role === "manager") {
+      user = await staffModel.findByPk(decoded.id);
+    }
+
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -24,7 +33,7 @@ exports.getCid = async (req, res, next) => {
     // ✅ Attach cid and user info to request
     // req.user = user;
     req.cid = user.id;
-    req.role = "owner"; // assuming user has a role field
+    req.role = decoded.role; // assuming user has a role field
 
     next();
   } catch (error) {

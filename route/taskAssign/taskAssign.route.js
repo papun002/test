@@ -33,5 +33,6 @@ router.put(
 // owner admin routes
 router.get("/get/taskassign", getCid, getAllTasksForAdmin);
 router.put("/update/taskassign/status", getCid, approveRejectTaskAssign);
+router.delete("/delete/taskassignbyadmin", getCid, deleteTaskAssign);
 
 module.exports = router;

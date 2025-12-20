@@ -13,12 +13,12 @@ router.put("/active/staff", getCid, staffController.activeStaff);
 router.get("/getstaffbymobile", getCid, staffController.getStaffByMobile);
 
 
-router.get("/get/driver/allsummary", getCid,staffController.getStaffAllSummary)
+router.get("/get/driver/allsummary", getCid, staffController.getStaffAllSummary)
 
 
 // for conductor module
 
-router.get("/get/staff/staff",getSidOfStaff, staffController.getStaff);
+router.get("/get/staff/staff", getSidOfStaff, staffController.getStaff);
 
 
 module.exports = router;

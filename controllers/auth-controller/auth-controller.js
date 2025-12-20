@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
 
     // Optionally, create a JWT token
     const token = jwt.sign(
-      { id: firm.id, mobileNo: firm.mobileNo },
+      { id: firm.id, mobileNo: firm.mobileNo, role: "owner" },
       "hjuyu8hj#23",
       { expiresIn: "24hr" }
     );
