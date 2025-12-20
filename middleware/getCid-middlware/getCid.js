@@ -32,7 +32,14 @@ exports.getCid = async (req, res, next) => {
 
     // ✅ Attach cid and user info to request
     // req.user = user;
-    req.cid = user.id;
+
+    if (decoded.role === "manager") {
+      req.sid = user.id;
+      req.cid = user.cid;
+    } else {
+      req.cid = user.id;
+    }
+
     req.role = decoded.role; // assuming user has a role field
 
     next();
