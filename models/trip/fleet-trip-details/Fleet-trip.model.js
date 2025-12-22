@@ -83,6 +83,10 @@ const FleetTripModel = sequelize.define(
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
     },
+    stand: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
+    },
     otherExp: {
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
