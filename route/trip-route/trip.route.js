@@ -18,6 +18,7 @@ const {
   FetchTripDetailsByManager,
   FetchTripDetailsByManagerCustomDate,
   updateTripByStaffId,
+  updateTripByOwner,
 } = require("../../controllers/trip-controller/fleet-trip-details/fleet-trip-details.controller");
 
 const {
@@ -38,14 +39,15 @@ router.get(
   getCid,
   RecentDateOfTripsByRouteId
 );
-router.get("/get/stafffortrips",getCid,getTripsStaff)
+router.get("/get/stafffortrips", getCid, getTripsStaff)
 
 router.delete("/delete/trip", getCid, deleteTrips);
+router.put("/update/trip", getCid, updateTripByOwner);
 
 
 // --------------------------------------CONDUCTOR MODULE---------------------------------------------------------------------
 router.get("/get/tripsbyconductorid", getSidOfStaff, getTripsByConductorId);
-router.post("/create/tripbyconductorid", getSidOfStaff,createTripByStaffId);
+router.post("/create/tripbyconductorid", getSidOfStaff, createTripByStaffId);
 router.delete("/delete/staff/trip", getSidOfStaff, deleteTripsStaff);
 router.put("/update/staff/trip", getSidOfStaff, updateTripByStaffId);
 

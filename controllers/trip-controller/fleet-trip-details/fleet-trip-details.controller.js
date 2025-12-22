@@ -878,3 +878,118 @@ exports.updateTripByStaffId = async (req, res) => {
   }
 };
 
+exports.updateTripByOwner = async (req, res) => {
+  try {
+    const { tripId } = req.query;
+    const data = req.body;
+    const cid = req.cid;
+    const role = req.role;
+
+    console.log("Request Role:", role);
+
+    // 🔴 tripId validation
+    if (!tripId) {
+      return res.status(400).json({
+        success: false,
+        message: "tripId is required",
+      });
+    }
+
+    // 🔹 Determine conductorId (same logic as create)
+    const conductorId = getConductorId(req, data);
+
+    if (!conductorId) {
+      return res.status(400).json({
+        success: false,
+        message:
+          role === "owner"
+            ? "Conductor ID is required for owner"
+            : "Conductor ID is required",
+      });
+    }
+
+    // 🔹 Find existing trip
+    const trip = await FleetTripModel.findOne({
+      where: {
+        id: tripId,
+        cid,
+        isDeleted: false,
+      },
+    });
+
+    if (!trip) {
+      return res.status(404).json({
+        success: false,
+        message: "Trip not found",
+      });
+    }
+
+    // 🔹 Duplicate trip check (only if key fields change)
+    const isKeyFieldChanged =
+      data.date !== trip.date ||
+      data.routeId !== trip.routeId ||
+      data.routeName !== trip.routeName ||
+      conductorId !== trip.conductorId;
+
+    if (isKeyFieldChanged) {
+      const duplicateTrip = await FleetTripModel.findOne({
+        where: {
+          id: { [Op.ne]: tripId },
+          date: data.date,
+          routeName: data.routeName,
+          routeId: data.routeId,
+          conductorId,
+          cid,
+          isDeleted: false,
+        },
+      });
+
+      if (duplicateTrip) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Another trip with the same date and Route Name already exists",
+        });
+      }
+    }
+
+    // 🔹 Update trip
+    await trip.update({
+      busNo: data.busNo,
+      upTripSale: data.upTripSale,
+      downTripSale: data.downTripSale,
+      luggage: data.luggage,
+      amountJama: data.amountJama,
+      totalSale: data.totalSale,
+      mainFuel: data.mainFuel,
+      fixedFuel: data.fixedFuel,
+      coolie: data.coolie,
+      staff: data.staff,
+      fastTagTollAmt: data.fastTagTollAmt,
+      partsAccessories: data.partsAccessories,
+      mistriWorks: data.mistriWorks,
+      busWorks: data.busWorks,
+      otherExp: data.otherExp,
+      totalExpenditures: data.totalExpenditures,
+      balance: data.balance,
+      driverId: data.driverId,
+      mainFuelSameAsFixedFuel: data.mainFuelSameAsFixed,
+      luggageAddWithTotalSale: data.luggageAddWithTotalSale,
+      stand: data.stand,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Trip updated successfully",
+      trip,
+    });
+  } catch (error) {
+    console.error("Update Trip Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update trip",
+      error: error.message,
+    });
+  }
+};
+
