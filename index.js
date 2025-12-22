@@ -1,12 +1,12 @@
+
 // Load environment variables
 require("dotenv").config();
 
 const express = require("express");
 const helmet = require("helmet");
 const compression = require("compression");
-const cluster = require("cluster");
-const os = require("os");
 const cors = require("cors");
+
 const authRoutes = require("./route/auth.route");
 const tripRoutes = require("./route/trip-route/trip.route");
 const vehicleRoutes = require("./route/vehicle-route/vehicle.route");
@@ -19,75 +19,93 @@ const backupRoutes = require("./route/backup-route/backupRoutes");
 const notifyRoutes = require("./route/notify/notify.route");
 const busworkRoutes = require("./route/buswork/buswork.route");
 const taskAssignRoutes = require("./route/taskAssign/taskAssign.route");
+const locationRoutes = require("./route/location-route/location.route");
 
-const numCPUs = os.cpus().length;
-const PORT = process.env.PORT || 4000;
 const { connectDB, sequelize } = require("./config/db");
 
-// Function that starts the express app
+const PORT = process.env.PORT || 4000;
+
+/* =========================
+   CREATE EXPRESS APP
+========================= */
+const app = express();
+
+/* =========================
+   CORS SETUP
+========================= */
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["*"];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      // allow all if *
+      if (!origin || allowedOrigins.includes("*") || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS blocked"));
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD"],
+    allowedHeaders: ["Content-Type", "Authorization",],
+    credentials: true,
+    noLoader: true,
+  })
+);
+
+app.options("*", cors());
+
+/* =========================
+   SECURITY & PERFORMANCE
+========================= */
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
+app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+/* =========================
+   ROUTES
+========================= */
+app.get("/", (req, res) => {
+  res.send("<h1>🚀 Kalinga Putra Group API running Version 1.0</h1>");
+});
+
+app.use("/api", authRoutes);
+app.use("/api/trip", tripRoutes);
+app.use("/api/vehicles", vehicleRoutes);
+app.use("/api/routes", routeRoutes);
+app.use("/api/staffs", staffRoutes);
+app.use("/api/fuel", FuelRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/recycle", recycleRoutes);
+app.use("/api/backup", backupRoutes);
+app.use("/api/notify", notifyRoutes);
+app.use("/api/buswork", busworkRoutes);
+app.use("/api/taskassign", taskAssignRoutes);
+app.use("/api/location", locationRoutes);
+
+/* =========================
+   START SERVER
+========================= */
 async function startServer() {
-  const app = express();
-  app.use(cors());
+  try {
+    await connectDB();
+    await sequelize.sync({ alter: false });
+    console.log("🛢️ Database connected & synced");
 
-  // Security headers
-  app.use(helmet());
-
-  // Gzip compression
-  app.use(compression());
-
-  // Serve static files (cached for 1 day)
-  app.use(express.static("public", { maxAge: "1d" }));
-
-  // JSON parsing middleware
-  await connectDB();
-
-  await sequelize.sync({ alter: false });
-
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
-  console.log(
-    `🛢️  Database connected: ${process.env.DB_NAME} at ${process.env.DB_HOST}`
-  );
-  // Use routes
-  app.use("/api", authRoutes);
-  app.use("/api/trip", tripRoutes);
-  app.use("/api/vehicles", vehicleRoutes);
-  app.use("/api/routes", routeRoutes);
-  app.use("/api/staffs", staffRoutes);
-  app.use("/api/fuel", FuelRoutes);
-  app.use("/api/dashboard", dashboardRoutes);
-  app.use("/api/recycle", recycleRoutes);
-  app.use("/api/backup", backupRoutes);
-  app.use("/api/notify", notifyRoutes);
-  app.use("/api/buswork", busworkRoutes);
-  app.use("/api/taskassign", taskAssignRoutes);
-
-  // Basic route
-  app.get("/", (req, res) => {
-    res.send("🚀 Optimized Node Server is running smoothly!");
-  });
-
-  // Start server
-  app.listen(PORT, () => {
-    console.log(`✅ Server running on port ${PORT} | PID: ${process.pid}`);
-  });
-}
-
-// Cluster mode for multi-core usage
-if (cluster.isMaster) {
-  console.log(`🧠 Master ${process.pid} is running`);
-  console.log(`⚡ Starting ${numCPUs} workers...`);
-
-  // Fork workers
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
+    app.listen(PORT, () => {
+      console.log(`✅ Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ Server startup failed:", err);
+    process.exit(1);
   }
-
-  // Restart worker if one crashes
-  cluster.on("exit", (worker, code, signal) => {
-    console.log(`💀 Worker ${worker.process.pid} died. Restarting...`);
-    cluster.fork();
-  });
-} else {
-  startServer();
 }
+
+startServer();
