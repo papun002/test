@@ -18,6 +18,7 @@ exports.CreateTripDetails = async (req, res) => {
         routeName: data.routeName,
         routeId: data.routeId,
         cid: req.cid,
+        isDeleted: false
       },
     });
 
