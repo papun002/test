@@ -8,7 +8,6 @@ exports.createTaskAssign = async (req, res) => {
     const { date, staffId, routeId } = req.body;
     const cid = req.cid;
 
-    // 🔴 Validation
     if (!date || !staffId || !routeId) {
       return res.status(400).json({
         success: false,
@@ -16,24 +15,27 @@ exports.createTaskAssign = async (req, res) => {
       });
     }
 
-    // 🔴 One staff → one route per date
-    const staffBusy = await taskAssignModel.findOne({
+    // ❌ Only block same date + same staff + same route
+    const existingTask = await taskAssignModel.findOne({
       where: {
         date,
         staffId,
+        routeId,
         cid,
         isDeleted: false,
+        status: ["pending", "success"],
       },
     });
 
-    if (staffBusy) {
+    if (existingTask) {
       return res.status(409).json({
         success: false,
-        message: "This staff is already assigned on this date",
+        message:
+          "This staff is already assigned to this route on this date",
       });
     }
 
-    // ✅ Create task assignment
+    // ✅ Allow different staff or different route
     const task = await taskAssignModel.create({
       date,
       staffId,
@@ -50,20 +52,13 @@ exports.createTaskAssign = async (req, res) => {
   } catch (error) {
     console.error("Create Task Assign Error:", error);
 
-    // 🔴 Handle DB unique constraint error (if added)
-    if (error.name === "SequelizeUniqueConstraintError") {
-      return res.status(409).json({
-        success: false,
-        message: "This staff is already assigned on this date",
-      });
-    }
-
     return res.status(500).json({
       success: false,
       message: "Internal server error",
     });
   }
 };
+
 
 // get all pending tasks for admin
 exports.getAllTasksForAdmin = async (req, res) => {
