@@ -14,7 +14,7 @@ router.get("/get/vehicles", getCid, vehicleController.getVehicles);
 router.delete("/delete/vehicle", getCid, vehicleController.deleteVehicle);
 
 // Edit a vehicle
-router.put("/edit/vehicle/:vehicleId", getCid, vehicleController.editVehicle);
+router.put("/edit/vehicle", getCid, vehicleController.editVehicle);
 
 //------------------------------------------------- conductor module --------------------------------------------
 router.get("/get/staff/vehicles", getSidOfStaff, vehicleController.getVehicles);

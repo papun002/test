@@ -93,7 +93,7 @@ exports.deleteVehicle = async (req, res) => {
 //edit Vehicles
 exports.editVehicle = async (req, res) => {
   try {
-    const { vehicleId } = req.params;
+    const { vehicleId } = req.query;
 
     const vehicle = await VehicleModel.findOne({
       where: { id: vehicleId, cid: req.cid, isDeleted: false },

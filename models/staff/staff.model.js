@@ -8,7 +8,7 @@ const staffModel = sequelize.define(
     role: { type: DataTypes.STRING, allowNull: false },
     name: { type: DataTypes.STRING, allowNull: false },
     nickName: { type: DataTypes.STRING, allowNull: false },
-    phone: { type: DataTypes.STRING, allowNull: false, unique: true },
+    phone: { type: DataTypes.STRING, allowNull: false },
     address: { type: DataTypes.STRING },
     cid: {
       type: DataTypes.INTEGER,

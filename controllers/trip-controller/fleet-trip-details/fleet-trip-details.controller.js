@@ -82,6 +82,7 @@ exports.CancelTrips = async (req, res) => {
         routeId: routeId,
         date: date,
         cid: req.cid,
+        isDeleted: false,
       },
     });
 
