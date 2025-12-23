@@ -55,6 +55,7 @@ exports.CreateTripDetails = async (req, res) => {
       mainFuelSameAsFixedFuel: data.mainFuelSameAsFixed,
       luggageAddWithTotalSale: data.luggageAddWithTotalSale,
       cid: req.cid,
+      stand: data.stand,
     });
 
     res.status(201).json({

@@ -7,5 +7,6 @@ const getCid = require("../middleware/getCid-middlware/getCid");
 router.post("/auth/signup", authController.signup);
 router.post("/auth/login", authController.login);
 router.post("/staff/login", authController.staffLogin);
+router.post("/manager/login", authController.managerLogin);
 
 module.exports = router;

@@ -92,20 +92,18 @@ exports.staffLogin = async (req, res) => {
       return res.status(404).json({ message: "Staff not found or inactive" });
     }
 
-    /* 🔐 PASSWORD CHECK */
+    /* 🔐 ROLE CHECK */
     if (staff.role !== "conductor") {
-      if (!password || staff.password !== password) {
-        return res
-          .status(400)
-          .json({ message: "Invalid mobile number or password" });
-      }
-    } else {
-      // conductor: optional password
-      if (password && staff.password && password !== staff.password) {
-        return res
-          .status(400)
-          .json({ message: "Invalid mobile number or password" });
-      }
+      return res
+        .status(403)
+        .json({ message: "Access denied. Only conductors can login here." });
+    }
+
+    /* 🔐 PASSWORD CHECK (Conductor: optional password) */
+    if (password && staff.password && password !== staff.password) {
+      return res
+        .status(400)
+        .json({ message: "Invalid mobile number or password" });
     }
 
     /* 🔑 CREATE TOKEN (STANDARD PAYLOAD) */
@@ -139,3 +137,67 @@ exports.staffLogin = async (req, res) => {
   }
 };
 
+exports.managerLogin = async (req, res) => {
+  try {
+    const { mobile, password } = req.body;
+
+    if (!mobile) {
+      return res.status(400).json({ message: "Mobile number is required" });
+    }
+
+    const staff = await staffModel.findOne({
+      where: {
+        phone: mobile,
+        status: true,
+        isDeleted: false,
+      },
+    });
+
+    if (!staff) {
+      return res.status(404).json({ message: "Staff not found or inactive" });
+    }
+
+    /* 🔐 ROLE CHECK */
+    if (staff.role !== "manager") {
+      return res
+        .status(403)
+        .json({ message: "Access denied. Only managers can login here." });
+    }
+
+    /* 🔐 PASSWORD CHECK (Conductor: optional password) */
+    if (password && staff.password && password !== staff.password) {
+      return res
+        .status(400)
+        .json({ message: "Invalid mobile number or password" });
+    }
+
+    /* 🔑 CREATE TOKEN (STANDARD PAYLOAD) */
+    const token = jwt.sign(
+      {
+        id: staff.id,
+        role: staff.role,
+        cid: staff.cid,
+      },
+      "hjuyu8hj#23",
+      { expiresIn: "24h" }
+    );
+
+    /* 🧹 REMOVE PASSWORD */
+    const { password: _, ...staffData } = staff.toJSON();
+
+    return res.status(200).json({
+      message: "Login successful",
+      staff: {
+        id: staffData.id,
+        name: staffData.name,
+        nickName: staffData.nickName,
+        mobile: staffData.phone,
+        role: staffData.role,
+      },
+      token,
+    });
+  } catch (error) {
+    console.error("Error in staff login:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
