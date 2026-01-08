@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../../config/db");
 const Firm = require("../../auth/signup");
+const FuelStationModel = require("../../fuel/fuel.model");
 
 const staffModel = require("../../staff/staff.model");
 const RouteModel = require("../../route/route.model");
@@ -144,6 +145,16 @@ const FleetTripModel = sequelize.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    fuelStationId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: FuelStationModel,
+        key: "id",
+      },
+      onUpdate: "CASCADE",
+      onDelete: "SET NULL",
+      defaultValue: 0
+    }
   },
   {
     tableName: "tripfleetdetails",

@@ -10,7 +10,7 @@ exports.CreateFuelStation = async (req, res) => {
   try {
     const { FuelStationName, address, mob, busRouteIds = [] } = req.body;
 
-    console.log(busRouteIds);
+    // console.log(busRouteIds);
 
     const fuelStation = await FuelStationModel.create({
       FuelStationName,
@@ -33,11 +33,9 @@ exports.CreateFuelStation = async (req, res) => {
 // Get all Fuel Stations (excluding deleted)
 exports.getAllFuelStations = async (req, res) => {
   try {
-    console.log(FuelStationModel);
     const fuelStations = await FuelStationModel.findAll({
       where: { isDeleted: false, cid: req.cid },
     });
-    console.log("Fuel" + fuelStations);
 
     // Map over stations to fetch route details
     const result = await Promise.all(
@@ -167,24 +165,10 @@ exports.getVehiclePutsFuelStation = async (req, res) => {
       });
     }
 
-    // 2️⃣ Get route names for these routeIds
-    const routes = await RouteModel.findAll({
-      where: { id: { [Op.in]: routeIds } },
-      attributes: ["routeName"],
-    });
-
-    const routeNames = routes.map((r) => r.routeName);
-
-    if (!routeNames.length) {
-      return res
-        .status(200)
-        .json({ success: true, data: [], message: "No route names found" });
-    }
-
-    // 3️⃣ Get FleetTripDetails for these route names
+    // 3️⃣ Get FleetTripDetails for these fuelstationId
     const tripData = await FleetTripModel.findAll({
       where: {
-        routeName: { [Op.in]: routeNames },
+        fuelStationId: fuelStationId,
         isDeleted: false,
         cid,
       },
@@ -209,7 +193,7 @@ exports.getVehiclePutsFuelStation = async (req, res) => {
 exports.CreateFuelTransaction = async (req, res) => {
   try {
     const { date, fuelStationId, amount } = req.body;
-    console.log(req.body);
+    // console.log(req.body);
 
     const fuelTransaction = await FuelTransactionModel.create({
       date: date,
@@ -324,7 +308,7 @@ exports.getFuelDetailsSummaryOfFuelStation = async (req, res) => {
     // 3️⃣ Get FleetTripDetails for these route names
     const tripData = await FleetTripModel.findAll({
       where: {
-        routeName: { [Op.in]: routeNames },
+        fuelStationId,
         isDeleted: false,
         cid,
       },
@@ -335,7 +319,6 @@ exports.getFuelDetailsSummaryOfFuelStation = async (req, res) => {
       (sum, trip) => sum + parseFloat(trip.mainFuel),
       0
     );
-    console.log("Total - " + totalMFuel);
 
     // 4️⃣ Fetch total paid amount from transactions (example: tripId or stationId)
     const tripIds = tripData.map((trip) => trip.id);
@@ -352,7 +335,7 @@ exports.getFuelDetailsSummaryOfFuelStation = async (req, res) => {
       (sum, tx) => sum + parseFloat(tx.amountPaid),
       0
     );
-    console.log("total paid - " + totalPaidData);
+    // console.log("total paid - " + totalPaidData);
 
     // 5️⃣ Calculate due
     const due = totalMFuel - totalPaid;
@@ -592,4 +575,4 @@ exports.getRecentPreviousDue = async (req, res) => {
   }
 };
 
-exports.getUpdateDueCurrent = async (req, res) => {};
+exports.getUpdateDueCurrent = async (req, res) => { };

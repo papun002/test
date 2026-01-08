@@ -1,6 +1,9 @@
 const { where } = require("sequelize");
 const RouteModel = require("../../models/route/route.model");
 const FleetTripModel = require("../../models/trip/fleet-trip-details/Fleet-trip.model");
+const { FuelStationModel } = require("../../models/fuel/fuel.model");
+
+RouteModel.belongsTo(FuelStationModel, { foreignKey: "fuelStationId" });
 
 exports.createRoute = async (req, res) => {
   try {
@@ -8,13 +11,14 @@ exports.createRoute = async (req, res) => {
       route,
       defaultVehicle,
       fixedFasttag,
+      defaultFuelStation,
+      fixedStaff,
       fixedFuel,
       coolieFeild,
       standFeild,
       fastTagFeild,
       staffFeild,
     } = req.body;
-
     // insert into db
     const newRoute = await RouteModel.create({
       routeName: route,
@@ -26,6 +30,8 @@ exports.createRoute = async (req, res) => {
       standFeild,
       fastTagFeild,
       staffFeild,
+      fuelStationId: defaultFuelStation || null,
+      fixedStaff,
     });
     res.status(201).json({ newRoute, message: "Route created successfully" });
 
@@ -42,17 +48,25 @@ exports.getRoutes = async (req, res) => {
   try {
     const routes = await RouteModel.findAll({
       where: { cid: req.cid, isDeleted: false },
+      include: [
+        {
+          model: FuelStationModel,
+          attributes: ["FuelStationName"],
+        },
+      ],
       attributes: [
         "id",
         "routeName",
         "defaultVehicle",
         "fixedFasttag",
         "fixedFuel",
+        "fixedStaff",
         "coolieFeild",
         "status",
         "staffFeild",
         "fastTagFeild",
         "standFeild",
+        "fuelStationId",
 
         [
           FleetTripModel.sequelize.literal(`(
@@ -75,10 +89,13 @@ exports.getRoutes = async (req, res) => {
       recentDate: route.dataValues.recentDate || null,
       fixedFuel: route.fixedFuel,
       fixedFasttag: route.fixedFasttag,
+      fixedStaff: route.fixedStaff,
       coolieFeild: route.coolieFeild,
       staffFeild: route.staffFeild,
       fastTagFeild: route.fastTagFeild,
       standFeild: route.standFeild,
+      defaultFuelStation: route.fuelStationId,
+      fuelStationName: route.FuelStation ? route.FuelStation.FuelStationName : null,
     }));
 
     res.status(200).json({ routes: formattedRoutes });
@@ -120,6 +137,8 @@ exports.editRoute = async (req, res) => {
       standFeild,
       staffFeild,
       fastTagFeild,
+      defaultFuelStation,
+      fixedStaff,
     } = payload;
 
     // Update route using Sequelize
@@ -133,6 +152,8 @@ exports.editRoute = async (req, res) => {
         standFeild,
         staffFeild,
         fastTagFeild,
+        fuelStationId: defaultFuelStation || null,
+        fixedStaff,
       },
       {
         where: {

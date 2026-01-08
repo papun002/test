@@ -10,6 +10,18 @@ const Firm = sequelize.define(
       autoIncrement: true,
       primaryKey: true,
     },
+    name: {
+      type: DataTypes.STRING(150),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Name is required" },
+        len: { args: [2, 150], msg: "Name must be 2-150 characters" },
+      },
+    },
+    ownerType: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     firmName: {
       type: DataTypes.STRING(150),
       allowNull: false,
@@ -19,24 +31,24 @@ const Firm = sequelize.define(
       },
     },
     mobileNo: {
-  type: DataTypes.STRING(15),
-  allowNull: false,
-  validate: {
-    notEmpty: { msg: "Mobile No is required" },
-    is: {
-      args: /^[0-9]{10,15}$/,
-      msg: "Mobile No must be 10-15 digits",
+      type: DataTypes.STRING(15),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Mobile No is required" },
+        is: {
+          args: /^[0-9]{10,15}$/,
+          msg: "Mobile No must be 10-15 digits",
+        },
+      },
     },
-  },
-},
-password: {
-  type: DataTypes.STRING(200),
-  allowNull: false,
-  validate: {
-    notEmpty: { msg: "Password is required" },
-    len: { args: [6, 200], msg: "Password must be at least 6 characters" },
-  },
-},
+    password: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+      validate: {
+        notEmpty: { msg: "Password is required" },
+        len: { args: [6, 200], msg: "Password must be at least 6 characters" },
+      },
+    },
   },
   {
     tableName: "firms",

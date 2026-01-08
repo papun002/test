@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { sequelize } = require("../../config/db");
 const Firm = require("../../models/auth/signup");
+const FuelStationModel = require("../../models/fuel/fuel.model");
 
 const RouteModel = sequelize.define(
   "RouteModel",
@@ -21,7 +22,6 @@ const RouteModel = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
-
     cid: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -35,22 +35,29 @@ const RouteModel = sequelize.define(
       defaultValue: false,
       allowNull: false,
     },
-
+    fuelStationId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: { model: FuelStationModel, key: "id" },
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
+    },
     fixedFasttag: {
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
     },
-
     fixedFuel: {
       type: DataTypes.DECIMAL(10, 2),
       defaultValue: 0,
     },
-
+    fixedStaff: {
+      type: DataTypes.DECIMAL(10, 2),
+      defaultValue: 0,
+    },
     status: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
-
     coolieFeild: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,

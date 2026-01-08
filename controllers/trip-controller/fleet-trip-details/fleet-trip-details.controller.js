@@ -56,6 +56,7 @@ exports.CreateTripDetails = async (req, res) => {
       luggageAddWithTotalSale: data.luggageAddWithTotalSale,
       cid: req.cid,
       stand: data.stand,
+      fuelStationId: data.fuelStationId,
     });
 
     res.status(201).json({
@@ -600,6 +601,7 @@ exports.createTripByStaffId = async (req, res) => {
       luggageAddWithTotalSale: data.luggageAddWithTotalSale,
       cid: cid,
       stand: data.stand,
+      fuelStationId: data.fuelStationId,
     });
 
     res.status(201).json({
@@ -862,6 +864,7 @@ exports.updateTripByStaffId = async (req, res) => {
       mainFuelSameAsFixedFuel: data.mainFuelSameAsFixed,
       luggageAddWithTotalSale: data.luggageAddWithTotalSale,
       stand: data.stand,
+      fuelStationId: data.fuelStationId,
     });
 
     return res.status(200).json({
@@ -977,6 +980,7 @@ exports.updateTripByOwner = async (req, res) => {
       mainFuelSameAsFixedFuel: data.mainFuelSameAsFixed,
       luggageAddWithTotalSale: data.luggageAddWithTotalSale,
       stand: data.stand,
+      fuelStationId: data.fuelStationId,
     });
 
     return res.status(200).json({

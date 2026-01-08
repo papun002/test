@@ -34,6 +34,10 @@ const VehicleModel = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    borderTaxUpto: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
     fitnessUpto: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -50,8 +54,8 @@ const VehicleModel = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-          model: Firm, // name of Target model
-          key: 'id', // key in Target model that we're referencing
+        model: Firm, // name of Target model
+        key: 'id', // key in Target model that we're referencing
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',

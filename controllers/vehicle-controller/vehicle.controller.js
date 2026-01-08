@@ -13,6 +13,7 @@ exports.createVehicle = async (req, res) => {
       fitnessUpto,
       insuranceUpto,
       puccUpto,
+      borderTaxUpto
     } = req.body;
 
     // vehicle already exists
@@ -37,6 +38,7 @@ exports.createVehicle = async (req, res) => {
       insuranceUpto,
       puccUpto,
       cid: req.cid,
+      borderTaxUpto
     });
     res
       .status(201)
@@ -93,7 +95,7 @@ exports.deleteVehicle = async (req, res) => {
 //edit Vehicles
 exports.editVehicle = async (req, res) => {
   try {
-    const { vehicleId } = req.query;
+    const { vehicleId } = req.params;
 
     const vehicle = await VehicleModel.findOne({
       where: { id: vehicleId, cid: req.cid, isDeleted: false },
@@ -111,6 +113,7 @@ exports.editVehicle = async (req, res) => {
       fitnessUpto,
       insuranceUpto,
       puccUpto,
+      borderTaxUpto,
     } = req.body;
 
     // Check if another vehicle with the same registration number exists
@@ -137,6 +140,7 @@ exports.editVehicle = async (req, res) => {
     vehicle.fitnessUpto = fitnessUpto;
     vehicle.insuranceUpto = insuranceUpto;
     vehicle.puccUpto = puccUpto;
+    vehicle.borderTaxUpto = borderTaxUpto;
 
     await vehicle.save();
     res.status(200).json({ vehicle, message: "Vehicle updated successfully" });

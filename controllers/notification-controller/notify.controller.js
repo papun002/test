@@ -61,6 +61,7 @@ exports.getAllNotifications = async (req, res) => {
         "taxUpto",
         "fitnessUpto",
         "puccUpto",
+        "borderTaxUpto",
       ],
     });
 
@@ -101,6 +102,15 @@ exports.getAllNotifications = async (req, res) => {
         vehicleNotifications.push("PUCC already expired");
       } else if (isWithinDays(v.puccUpto)) {
         vehicleNotifications.push("PUCC expiring soon");
+      }
+
+      // BORDER TAX
+      if (isToday(v.borderTaxUpto)) {
+        vehicleNotifications.push("Border Tax expires today");
+      } else if (isExpired(v.borderTaxUpto)) {
+        vehicleNotifications.push("Border Tax already expired");
+      } else if (isWithinDays(v.borderTaxUpto)) {
+        vehicleNotifications.push("Border Tax expiring soon");
       }
 
       if (vehicleNotifications.length > 0) {
