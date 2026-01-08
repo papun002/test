@@ -1,4 +1,4 @@
-const StaffLocation = require("../../models/staff/staff.model");
+const StaffLocation = require("../../models/location/location.model");
 
 // Update or Create Location
 exports.updateLocation = async (req, res) => {
