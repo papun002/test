@@ -52,4 +52,9 @@ const StaffLocation = sequelize.define(
     }
 );
 
+
+StaffLocation.belongsTo(Staff, {
+    foreignKey: "staffId",
+});
+
 module.exports = StaffLocation;

@@ -1,4 +1,5 @@
 const StaffLocation = require("../../models/location/location.model");
+const StaffModel = require("../../models/staff/staff.model");
 
 // Update or Create Location
 exports.updateLocation = async (req, res) => {
@@ -33,7 +34,7 @@ exports.updateLocation = async (req, res) => {
 };
 
 // Get Location by Staff ID
-exports.getLocation = async (req, res) => {
+exports.getLocationByStaffId = async (req, res) => {
     try {
         const { staffId } = req.query;
 
@@ -46,6 +47,9 @@ exports.getLocation = async (req, res) => {
                 staffId,
                 cid: req.cid,
                 isDeleted: false
+            },
+            include: {
+                model: StaffModel, // Included Staff model to get staff details with location
             }
         });
 
@@ -57,6 +61,28 @@ exports.getLocation = async (req, res) => {
 
     } catch (error) {
         console.error("Error fetching location:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+exports.getLocation = async (req, res) => {
+    try {
+        // Changed findOne to findAll to get all locations for the firm
+        const locations = await StaffLocation.findAll({
+            where: {
+                cid: req.cid,
+                isDeleted: false
+            },
+            include: {
+                model: StaffModel, // Included Staff model to get staff details with location
+            }
+        });
+        if (!locations || locations.length === 0) {
+            return res.status(404).json({ message: "No locations found for this firm" });
+        }
+        res.status(200).json({ locations }); // Returning list of locations
+    } catch (error) {
+        console.error("Error fetching locations:", error);
         res.status(500).json({ message: "Internal server error" });
     }
 };
