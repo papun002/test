@@ -576,3 +576,41 @@ exports.getRecentPreviousDue = async (req, res) => {
 };
 
 exports.getUpdateDueCurrent = async (req, res) => { };
+
+exports.deleteFuelTransaction = async (req, res) => {
+  try {
+    const { id } = req.query;
+    const { cid } = req;
+
+    if (!id) {
+      return res.status(400).json({ message: "id is required" });
+    }
+
+    const deletedTransaction = await FuelTransactionModel.destroy({
+      where: {
+        id,
+        cid,
+        isDeleted: false,
+      },
+    });
+
+    if (!deletedTransaction) {
+      return res.status(404).json({
+        success: false,
+        message: "Transaction not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Transaction deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Error in deleteFuelTransaction:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};

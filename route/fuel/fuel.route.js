@@ -15,6 +15,7 @@ const {
   // getUpdateDueCurrent,
   getUpdateDuePrevious,
   getRecentPreviousDue,
+  deleteFuelTransaction
 } = require("../../controllers/fuel-controller/Fuel.controller");
 
 // Create a new route
@@ -42,5 +43,6 @@ router.put(
 );
 
 router.delete("/delete/fuelstation", getCid, deleteFuelStation);
+router.delete("/delete/fueltranscation", getCid, deleteFuelTransaction);
 
 module.exports = router;
