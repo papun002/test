@@ -2,6 +2,7 @@ const RouteModel = require("../../models/route/route.model");
 const VehicleModel = require("../../models/vehicles/vehicleModel");
 const TripModel = require("../../models/trip/fleet-trip-details/Fleet-trip.model");
 const StaffModel = require("../../models/staff/staff.model");
+const { FuelTransactionModel } = require("../../models/fuel/fuel.model");
 
 
 
@@ -10,6 +11,7 @@ const models = [
   { name: "Route", model: RouteModel },
   { name: "Trip", model: TripModel },
   { name: "Staff", model: StaffModel },
+  { name: "FuelPayment", model: FuelTransactionModel },
 ];
 
 // GET all deleted data
